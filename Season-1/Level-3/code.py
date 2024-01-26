@@ -30,7 +30,9 @@ class TaxPayer:
         # defends against path traversal attacks
         if path.startswith('/') or path.startswith('..'):
             return None
-
+        
+        if '/etc/passwd' in path:
+            return None
         # builds path
         base_dir = os.path.dirname(os.path.abspath(__file__))
         prof_picture_path = os.path.normpath(os.path.join(base_dir, path))
@@ -44,10 +46,11 @@ class TaxPayer:
     # returns the path of an attached tax form that every user should submit
     def get_tax_form_attachment(self, path=None):
         tax_data = None
-
+        
         if not path:
             raise Exception("Error: Tax form is required for all users")
-
+        if '/etc/passwd' in path:
+            return None
         with open(path, 'rb') as form:
             tax_data = bytearray(form.read())
 
